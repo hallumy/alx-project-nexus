@@ -26,7 +26,7 @@ This program emphasized writing clean, efficient, and secure backend code while 
 
 ### **1. Database Design**
 - Designed normalized relational databases using **PostgreSQL**.
-- Implemented **Entity Relationship Diagrams (ERDs)** for e-commerce and content management systems.
+- Implemented **Entity Relationship Diagrams (ERDs)**.
 - Focused on data integrity, indexing, and query optimization.
 
 ### **2. Asynchronous Programming**
@@ -35,7 +35,7 @@ This program emphasized writing clean, efficient, and secure backend code while 
 
 ### **3. Caching Strategies**
 - Applied **Redis-based caching** for API responses and database query results.
-- Implemented different caching layers (view-level, low-level, and per-object caching) to enhance performance.
+- Implemented caching to enhance performance.
 - Learned cache invalidation strategies to ensure consistency between cached and live data.
 
 ---
@@ -72,6 +72,6 @@ This journey not only deepened my technical skills but also enhanced my problem-
 
 ---
 
-**Author:** [Your Name]  
+**Author:** Ahlam Abdulkhalek  
 **Program:** ProDev Backend Engineering  
 **Technologies:** Python • Django • REST API • GraphQL • Docker • CI/CD • PostgreSQL • Redis

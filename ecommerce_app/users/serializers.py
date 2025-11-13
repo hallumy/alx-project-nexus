@@ -1,0 +1,21 @@
+from models import User, Address
+from rest_framework import serializers
+
+class UserSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the custom User model.
+
+    Converts User model instances to JSON and validates input data for creating
+    or updating users. Includes fields like username, email, role, phone, and address.
+    """
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'password', 'first_name', 'last_name', 'phone', 'role', 'date_joined']
+
+class AddressSerializer(serializers.ModelSerializer):
+    """Serializer for the Address model"""
+
+    class Meta:
+        model = Address
+        fields = ['id', 'user', 'street', 'city', 'region', 'country', 'postal_code', 'address_code']
+        read_only_fields = ['user']
