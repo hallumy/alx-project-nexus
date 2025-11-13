@@ -1,4 +1,4 @@
-from models import User, Address
+from .models import User, Address
 from rest_framework import serializers
 
 class UserSerializer(serializers.ModelSerializer):

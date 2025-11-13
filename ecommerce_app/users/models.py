@@ -14,7 +14,7 @@ class User(AbstractUser):
         CUSTOMER = "customer", "Customer"
         VENDOR = "vendor", "Vendor"
 
-    username      = models.CharField(max_length=20)
+    username      = models.CharField(max_length=20, unique=True)
     email         = models.CharField(max_length=50, unique=True)
     password      = models.CharField(max_length=30)
     first_name    = models.CharField(max_length=30)
