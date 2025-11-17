@@ -1,77 +1,51 @@
-# ProDev Backend Engineering Program
+🛒 E-Commerce Backend
+Real-World Backend Engineering Application
 
-## Overview
+This project simulates a real-world backend development environment focused on building a scalable, secure, and performant backend system for an e-commerce platform. It mirrors the workflows, challenges, and expectations of professional backend engineering teams.
 
-The **ProDev Backend Engineering Program** is an intensive, hands-on training focused on developing production-ready backend systems.  
-Throughout the program, I gained practical experience in **building scalable APIs**, **designing databases**, **implementing asynchronous processes**, and **deploying applications** using modern DevOps practices.
+📘 Overview
 
-This program emphasized writing clean, efficient, and secure backend code while adhering to industry best practices and software engineering principles.
+The E-Commerce Backend provides a robust API that powers an online product catalog. It includes secure user authentication, efficient product management, and advanced API features such as filtering, sorting, and pagination.
 
----
+This case study prepares backend engineers to build production-ready systems using modern best practices.
 
-## Key Technologies Covered
+🎯 Project Goals
+1. CRUD APIs
 
-| Technology | Purpose / Use Case |
-|-------------|--------------------|
-| **Python** | Core programming language used for backend logic and data manipulation. |
-| **Django** | High-level web framework for rapid development and clean, pragmatic design. |
-| **Django REST Framework (DRF)** | Used to build RESTful APIs with authentication, serialization, and permissions. |
-| **GraphQL** | Alternative API design for flexible, client-driven data querying. |
-| **Docker** | Containerization for consistent environments and simplified deployment. |
-| **CI/CD Pipelines** | Automated testing, integration, and deployment using tools like GitHub Actions or Jenkins. |
+Full CRUD support for:
 
----
+Products
 
-## Important Backend Development Concepts
+Categories
 
-### **1. Database Design**
-- Designed normalized relational databases using **PostgreSQL**.
-- Implemented **Entity Relationship Diagrams (ERDs)**.
-- Focused on data integrity, indexing, and query optimization.
+User accounts
 
-### **2. Asynchronous Programming**
-- Utilized **Celery** and **Redis** for background task management (e.g., sending emails, data processing).
-- Improved system scalability and user experience by decoupling time-consuming processes.
+JWT-based secure authentication & authorization.
 
-### **3. Caching Strategies**
-- Applied **Redis-based caching** for API responses and database query results.
-- Implemented caching to enhance performance.
-- Learned cache invalidation strategies to ensure consistency between cached and live data.
+2. Efficient Product Discovery
 
----
+Filtering (category, price range, availability)
 
-## Challenges Faced & Solutions Implemented
+Sorting (price, date added, name)
 
-| Challenge | Solution |
-|------------|-----------|
-| Managing multiple API response formats | Adopted **content negotiation** in DRF and integrated **GraphQL** for flexible data fetching. |
-| Handling slow database queries | Introduced **query optimization** and **caching mechanisms** (Redis, select_related/prefetch_related). |
-| Container orchestration issues | Used **Docker Compose** for multi-container setups (web, db, cache, worker). |
-| Scaling background tasks | Configured **Celery workers and Redis queues** for distributed task processing. |
-| Ensuring deployment reliability | Implemented **CI/CD pipelines** for automated builds, tests, and deployments. |
+Pagination (optimized for large datasets)
 
----
+3. Database Optimization
 
-## Best Practices & Personal Takeaways
+Scalable relational schema design (PostgreSQL)
 
-- **Write modular, reusable, and testable code** following the SOLID principles.
-- **Document APIs** using Swagger and GraphQL Playground.
-- **Use environment variables** and `.env` files for secure configuration management.
-- **Monitor and log** application performance using tools like Sentry and Prometheus.
-- **Automate everything** — from testing to deployment — for faster and safer iterations.
-- **Collaborate effectively** using Git workflows (branching, pull requests, code reviews).
+Query optimization and indexing for high-performance search
 
----
+Real-world database structure design principles
 
-## Conclusion
-
-The ProDev Backend Engineering Program strengthened my ability to build **robust, scalable, and maintainable backend systems**.  
-I now have hands-on experience across the entire backend lifecycle — from **design and implementation** to **testing, optimization, and deployment**.
-
-This journey not only deepened my technical skills but also enhanced my problem-solving mindset and software craftsmanship.
-
----
-
-**Author:** Ahlam Abdulkhalek  
-**Program:** ProDev Backend Engineering  
-**Technologies:** Python • Django • REST API • GraphQL • Docker • CI/CD • PostgreSQL • Redis
+🛠 Technologies Used
+Technology	Purpose
+Python	Core programming language
+Django	Backend framework
+Django REST Framework	API development
+PostgreSQL	Relational database
+JWT (SimpleJWT)	Token-based authentication
+Swagger (drf-yasg)	API documentation
+Django-Environ	Environment variable management
+Docker (optional)	Containerization
+CI/CD Pipelines	Automated build/testing
