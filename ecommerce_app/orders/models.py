@@ -1,14 +1,5 @@
 from django.db import models
 
-class Cart(models.Model):
-    """
-    Represents a user's shopping cart, storing selected products and their quantities.
-    Allows users to accumulate items before proceeding to checkout.
-    """
-    user        = models.ForeignKey('User', on_delete=models.CASCADE)
-    created_at  = models.DateTimeField(auto_now_add=True)
-    updated_at  = models.DateTimeField(auto_now_add=True)
-
 
 class Order(models.Model):
     """
@@ -24,7 +15,9 @@ class Order(models.Model):
     shipped_date    = models.DateTimeField(auto_now_add=True)
     payment_method  = models.CharField(max_length=45)
 
-
+    def __str__(self):
+        return f"Order #{self.order_number} - {self.payment_status}"
+    
 class OrderItem(models.Model):
     """
     Represents an individual product within an order, storing the product,
@@ -36,15 +29,29 @@ class OrderItem(models.Model):
     price       = models.DecimalField(max_digits=10, decimal_places=2)
     subtotal    = models.DecimalField(max_digits=10, decimal_places=2)
 
+    def __str__(self):
+        return f"{self.quantity} x {self.variant.product.name} ({self.order.order_number})"
 
-class CartItem(models.Model):
+class Shipment(models.Model):
     """
-    Represents an individual product added to a user's cart, including the
-    selected quantity and a reference to the related cart and product.
+    Tracks the shipment of an order, including tracking number, 
+    shipment status, and timestamps for updates.
     """
-    Cart        = models.ForeignKey('Cart', on_delete=models.CASCADE)
-    variant     = models.ForeignKey('Variant', on_delete=models.CASCADE)
-    quantity    = models.IntegerField()
-    price       = models.DecimalField(max_digits=10, decimal_places=2)
-    created_at  = models.DateTimeField(auto_now_add=True)
-    updated_at  = models.DateTimeField(auto_now_add=True)
+    class Status(models.TextChoices):
+        PENDING     = 'pending', 'Pending'
+        PROCESSING  = 'processing', 'Processing'
+        SHIPPED     = 'shipped', 'Shipped'
+        IN_TRANSIT  = 'in_transit', 'In Transit'
+        DELIVERED   = 'delivered', 'Delivered'
+        CANCELLED   = 'cancelled', 'Cancelled'
+        RETURNED    = 'returned', 'Returned'
+
+    order           = models.ForeignKey('Order', on_delete=models.CASCADE, related_name='order')
+    tracking_number = models.CharField(max_length=100, blank=True, null=True)
+    carrier         = models.CharField(max_length=30)
+    status          = models.CharField(max_length=30, choices=Status.choices, default=Status.PENDING)
+    shipped_at      = models.DateTimeField(auto_now_add=True)
+    delivered_at    = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.tracking_number} - {self.status}"
