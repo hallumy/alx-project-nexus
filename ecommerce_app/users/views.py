@@ -15,7 +15,13 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False):
+            return User.objects.none()
+
         user = self.request.user
+
+        if not user.is_authenticated:
+            return User.objects.none()
 
         if user.role == User.Roles.ADMIN:
             return User.objects.all()

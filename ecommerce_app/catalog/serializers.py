@@ -39,7 +39,7 @@ class CartSerializer(serializers.ModelSerializer):
     """Serializer for the Cart model.."""
 
     class Meta:
-        model = 'Cart'
+        model = Cart
         fields = ['id', 'user', 'created_at', 'updated_at']
 
 
