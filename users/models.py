@@ -14,17 +14,30 @@ class User(AbstractUser):
         CUSTOMER = "customer", "Customer"
         VENDOR = "vendor", "Vendor"
 
-    username      = models.CharField(max_length=20, unique=True)
+    username      = models.CharField(max_length=30, unique=True)
     email         = models.CharField(max_length=50, unique=True)
-    password      = models.CharField(max_length=30)
     first_name    = models.CharField(max_length=30)
     last_name     = models.CharField(max_length=30)
     phone         = models.CharField(max_length=15)
     role          = models.CharField(max_length=20, choices=Roles.choices, default=Roles.CUSTOMER)
 
+
+    @property
+    def is_admin(self):
+        return self.role == self.Roles.ADMIN
+
+    @property
+    def is_vendor(self):
+        return self.role == self.Roles.VENDOR
+
+    @property
+    def is_customer(self):
+        return self.role == self.Roles.CUSTOMER
+
     def __str__(self):
         return f"{self.username} ({self.role})"
-    
+
+
 class Address(models.Model):
     """
     Represents a users bill or shipping address.

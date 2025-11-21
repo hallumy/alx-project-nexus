@@ -136,7 +136,7 @@ class CartItem(models.Model):
     Represents an individual product added to a user's cart, including the
     selected quantity and a reference to the related cart and product.
     """
-    cart        = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
+    cart        = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items', null=True)
     variant     = models.ForeignKey('Variant', on_delete=models.CASCADE)
     quantity    = models.IntegerField()
     price       = models.DecimalField(max_digits=10, decimal_places=2)

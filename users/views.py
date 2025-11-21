@@ -3,6 +3,8 @@ from .serializers import UserSerializer, AddressSerializer
 from rest_framework.permissions import IsAuthenticated
 from .models import User, Address
 from .permissions import IsAdmin, IsVendor, IsCustomer
+from catalog.utils.mixins import AuthenticatedQuerysetMixin
+
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -42,21 +44,15 @@ class UserViewSet(viewsets.ModelViewSet):
             permission_classes = [IsAuthenticated]
 
         return [permission() for permission in permission_classes]
-class AddressViewSet(viewsets.ModelViewSet):
+    
+class AddressViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
     """
     Viewsets for managing addresses with role-based restrictions
     """
+    queryset  = Address.objects.all()
     serializer_class = AddressSerializer
     permission_classes = [IsAuthenticated]
+    user_field = "user" 
 
-    def get_queryset(self):
-        user = self.request.user
-
-        if user.role == User.Roles.ADMIN:
-            return Address.objects.all()
-        elif user.role == User.Roles.VENDOR:
-            return Address.objects.filter(user__role = User.Roles.Customer)
-        return Address.objects.filter(user=user)
-    
     def perform_create(self, serializer):
         serializer.save = (self.request.user)

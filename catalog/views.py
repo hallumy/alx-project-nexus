@@ -1,4 +1,7 @@
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from users.permissions import IsAdmin, IsCustomer, IsVendor
+from .utils.mixins import AuthenticatedQuerysetMixin
 from .models import (
     Category, Product, Variant, Cart, CartItem, Wishlist,
     WishlistItem, Discount, ProductDiscount, Inventory
@@ -23,6 +26,10 @@ class CategoryViewSet(viewsets.ModelViewSet):
     )
     serializer_class = CategorySerializer
 
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            return [AllowAny()]
+        return [IsAuthenticated(), IsAdmin()]
 
 class ProductViewSet(viewsets.ModelViewSet):
     """
@@ -37,6 +44,11 @@ class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     lookup_field = 'id'
 
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            return [AllowAny()]
+        return [IsAuthenticated(), IsAdmin()]
+
 
 class VariantViewSet(viewsets.ModelViewSet):
     """
@@ -47,35 +59,50 @@ class VariantViewSet(viewsets.ModelViewSet):
     serializer_class = VariantSerializer
     lookup_field = 'sku'
 
-class CartViewSet(viewsets.ModelViewSet):
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            return [AllowAny()]
+        return [IsAuthenticated(), IsAdmin()]
+
+
+class CartViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
     """
     ViewSet for managing user shopping carts.
     """
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
-
-class CartItemViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    
+class CartItemViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
     """
     ViewSet for managing items inside a shopping cart.
     Selects related cart and variant for optimization.
     """
-    queryset = CartItem.objects.all().select_related('cart', 'variant')
-    serializer_class = CartItemSerializer
+    queryset = CartItem.objects.all()
+    serializer_class = CartSerializer
+    permission_classes = [IsAuthenticated]
+    user_field = "cart__user"
 
-class WishlistViewSet(viewsets.ModelViewSet):
+
+class WishlistViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
     """
     ViewSet for managing user wishlists.
     """
     queryset = Wishlist.objects.all()
     serializer_class = WishlistSerializer
+    permission_classes = [IsAuthenticated]
 
-class WishlistItemViewSet(viewsets.ModelViewSet):
+
+class WishlistItemViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
     """
     ViewSet for managing products inside a wishlist.
     Selects related wishlist and product for optimization.
     """
-    queryset = WishlistItem.objects.all().select_related('wishlist', 'product')
+    queryset = WishlistItem.objects.all()
     serializer_class = WishlistItemSerializer
+    permission_classes = [IsAuthenticated]
+    user_field = "wishlist__user"
+
 
 class DiscountViewSet(viewsets.ModelViewSet):
     """
@@ -83,14 +110,16 @@ class DiscountViewSet(viewsets.ModelViewSet):
     """
     queryset = Discount.objects.all()
     serializer_class = DiscountSerializer
+    permission_classes = [IsAuthenticated, IsAdmin]
 
 class ProductDiscountViewSet(viewsets.ModelViewSet):
     """
     ViewSet for linking discounts to products.
     Prefetches related discount and product for optimization.
     """
-    queryset = ProductDiscount.objects.all().select_related('discount', 'product')
     serializer_class = ProductDiscountSerializer
+    permission_classes = [IsAuthenticated, IsAdmin]
+    queryset = ProductDiscount.objects.all().select_related('discount', 'product')
 
 class InventoryViewSet(viewsets.ModelViewSet):
     """
@@ -99,3 +128,4 @@ class InventoryViewSet(viewsets.ModelViewSet):
     """
     queryset = Inventory.objects.all().select_related('variant')
     serializer_class = InventorySerializer
+    permission_classes = [IsAuthenticated, (IsAdmin | IsVendor)]
