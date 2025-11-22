@@ -19,6 +19,8 @@ from django.urls import path, include
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from strawberry.django.views import GraphQLView
+from graphql_eco.schema import schema
 
 # Swagger schema view (for API docs)
 schema_view = get_schema_view(
@@ -41,5 +43,6 @@ urlpatterns = [
     path('api/', include('payment.urls')),
     path('api/', include('review.urls')),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='swagger-ui'),
+    path("graphql/", GraphQLView.as_view(schema=schema)),
 ]
 

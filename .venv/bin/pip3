@@ -1,4 +1,4 @@
-#!/home/ahlam/alx-project-nexus/.venv/bin/python3
+#!/home/ahlam/alx-project-nexus/.venv/bin/python3.10
 # -*- coding: utf-8 -*-
 import re
 import sys
