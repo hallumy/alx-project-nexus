@@ -139,7 +139,8 @@ Orders ↔ Order Items ↔ Product Variants
 Orders ↔ Payments, Shipments
  
 Below is the ERD
-![alt text](ERD_ecom.png)
+
+![alt text](/image/ERD_ecom.png)
 
 
 ## Authentication (JWT)
