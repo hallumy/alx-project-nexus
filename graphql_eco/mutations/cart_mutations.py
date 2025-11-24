@@ -15,8 +15,9 @@ class CartMutation:
         variant = Variant.objects.get(id=variant_id)
 
         item, created = CartItem.objects.get_or_create(
-            cart=cart, variant=variant,
-            defaults={"quantity": quantity, "price": variant.price}
+            cart=cart,
+            variant=variant,
+            defaults={"quantity": quantity, "price": variant.price},
         )
 
         if not created:

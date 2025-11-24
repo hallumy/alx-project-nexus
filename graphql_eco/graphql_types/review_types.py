@@ -3,6 +3,7 @@ from typing import Optional
 from strawberry import django as strawberry_django
 from review.models import Review
 
+
 @strawberry_django.type(Review)
 class ReviewType:
     id: strawberry.ID

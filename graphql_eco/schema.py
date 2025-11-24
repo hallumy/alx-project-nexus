@@ -28,6 +28,7 @@ class Query(
     """
     Combine all top-level query classes
     """
+
     pass
 
 
@@ -42,10 +43,8 @@ class Mutation(
     """
     Combine all top-level mutation classes
     """
+
     pass
 
 
-schema = strawberry.Schema(
-    query=Query,
-    mutation=Mutation
-)
+schema = strawberry.Schema(query=Query, mutation=Mutation)

@@ -7,7 +7,6 @@ from graphql_eco.graphql_types.user_types import UserType, AddressType
 @strawberry.type
 class UserMutation:
 
-    # ✏ Update Profile
     @strawberry.mutation
     def update_profile(
         self,
@@ -38,7 +37,6 @@ class UserMutation:
             is_customer=user.is_customer,
         )
 
-    # ➕ Create Address
     @strawberry.mutation
     def create_address(
         self,
@@ -75,7 +73,7 @@ class UserMutation:
             address_type=address.address_type,
         )
 
-    # ❌ Delete Address
+
     @strawberry.mutation
     def delete_address(self, info, address_id: int) -> bool:
         user = info.context["request"].user

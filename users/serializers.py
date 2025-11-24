@@ -1,6 +1,7 @@
 from .models import User, Address
 from rest_framework import serializers
 
+
 class UserSerializer(serializers.ModelSerializer):
     """
     Serializer for the custom User model.
@@ -8,21 +9,41 @@ class UserSerializer(serializers.ModelSerializer):
     Converts User model instances to JSON and validates input data for creating
     or updating users. Includes fields like username, email, role, phone, and address.
     """
+
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'phone', 'role', 'date_joined']
+        fields = [
+            "id",
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "phone",
+            "role",
+            "date_joined",
+        ]
 
     def create(self, validated_data):
         password = validated_data.pop("password")
         user = User(**validated_data)
-        user.set_password(password)       
+        user.set_password(password)
         user.save()
         return user
-    
+
+
 class AddressSerializer(serializers.ModelSerializer):
     """Serializer for the Address model"""
 
     class Meta:
         model = Address
-        fields = ['id', 'user', 'street', 'city', 'region', 'country', 'postal_code', 'postal_code']
-        read_only_fields = ['user']
+        fields = [
+            "id",
+            "user",
+            "street",
+            "city",
+            "region",
+            "country",
+            "postal_code",
+            "postal_code",
+        ]
+        read_only_fields = ["user"]

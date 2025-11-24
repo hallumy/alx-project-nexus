@@ -3,6 +3,7 @@ from typing import List
 from catalog.models import Cart, CartItem
 from strawberry import django as strawberry_django
 
+
 @strawberry_django.type(CartItem)
 class CartItemType:
     id: strawberry.ID

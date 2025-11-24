@@ -10,47 +10,118 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('catalog', '0001_initial'),
-        ('users', '0001_initial'),
+        ("catalog", "0001_initial"),
+        ("users", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Order',
+            name="Order",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('order_number', models.IntegerField()),
-                ('total_amount', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('payment_status', models.CharField(max_length=45)),
-                ('order_date', models.DateTimeField(auto_now_add=True)),
-                ('shipped_date', models.DateTimeField(auto_now_add=True)),
-                ('payment_method', models.CharField(max_length=45)),
-                ('address', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='users.address')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("order_number", models.IntegerField()),
+                ("total_amount", models.DecimalField(decimal_places=2, max_digits=10)),
+                ("payment_status", models.CharField(max_length=45)),
+                ("order_date", models.DateTimeField(auto_now_add=True)),
+                ("shipped_date", models.DateTimeField(auto_now_add=True)),
+                ("payment_method", models.CharField(max_length=45)),
+                (
+                    "address",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="users.address"
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='OrderItem',
+            name="OrderItem",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('quantity', models.IntegerField()),
-                ('price', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('subtotal', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('order', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='order.order')),
-                ('variant', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='catalog.variant')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("quantity", models.IntegerField()),
+                ("price", models.DecimalField(decimal_places=2, max_digits=10)),
+                ("subtotal", models.DecimalField(decimal_places=2, max_digits=10)),
+                (
+                    "order",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="order.order"
+                    ),
+                ),
+                (
+                    "variant",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="catalog.variant",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Shipment',
+            name="Shipment",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('tracking_number', models.CharField(blank=True, max_length=100, null=True)),
-                ('carrier', models.CharField(max_length=30)),
-                ('status', models.CharField(choices=[('pending', 'Pending'), ('processing', 'Processing'), ('shipped', 'Shipped'), ('in_transit', 'In Transit'), ('delivered', 'Delivered'), ('cancelled', 'Cancelled'), ('returned', 'Returned')], default='pending', max_length=30)),
-                ('shipped_at', models.DateTimeField(auto_now_add=True)),
-                ('delivered_at', models.DateTimeField(auto_now=True)),
-                ('order', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='order', to='order.order')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "tracking_number",
+                    models.CharField(blank=True, max_length=100, null=True),
+                ),
+                ("carrier", models.CharField(max_length=30)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("pending", "Pending"),
+                            ("processing", "Processing"),
+                            ("shipped", "Shipped"),
+                            ("in_transit", "In Transit"),
+                            ("delivered", "Delivered"),
+                            ("cancelled", "Cancelled"),
+                            ("returned", "Returned"),
+                        ],
+                        default="pending",
+                        max_length=30,
+                    ),
+                ),
+                ("shipped_at", models.DateTimeField(auto_now_add=True)),
+                ("delivered_at", models.DateTimeField(auto_now=True)),
+                (
+                    "order",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="order",
+                        to="order.order",
+                    ),
+                ),
             ],
         ),
     ]

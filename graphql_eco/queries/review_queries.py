@@ -3,6 +3,7 @@ from typing import List, Optional
 from review.models import Review
 from graphql_eco.graphql_types.review_types import ReviewType
 
+
 @strawberry.type
 class ReviewQuery:
 
@@ -13,7 +14,7 @@ class ReviewQuery:
 
         if not user.is_authenticated:
             return []
-        
+
         if user.is_admin:
             querys = Review.objects.all()
         elif user.is_vendor:

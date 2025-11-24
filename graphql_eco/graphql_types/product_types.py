@@ -3,6 +3,7 @@ from typing import List, Optional
 from strawberry import django as strawberry_django
 from catalog.models import Product, Variant, Category
 
+
 @strawberry_django.type(Variant)
 class VariantType:
     id: strawberry.ID
@@ -22,6 +23,7 @@ class CategoryType:
     @strawberry.field
     def children(self) -> List["CategoryType"]:
         return list(self.children.all())
+
 
 @strawberry_django.type(Product)
 class ProductType:

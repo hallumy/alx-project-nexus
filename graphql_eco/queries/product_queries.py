@@ -1,7 +1,12 @@
 import strawberry
 from typing import List, Optional
 from catalog.models import Product, Category, Variant
-from graphql_eco.graphql_types.product_types import ProductType, VariantType, CategoryType
+from graphql_eco.graphql_types.product_types import (
+    ProductType,
+    VariantType,
+    CategoryType,
+)
+
 
 @strawberry.type
 class ProductQuery:
@@ -11,7 +16,11 @@ class ProductQuery:
         """
         Fetch all products, optionally filtered by category.
         """
-        queryset = Product.objects.all().select_related("category").prefetch_related("variant_set")
+        queryset = (
+            Product.objects.all()
+            .select_related("category")
+            .prefetch_related("variant_set")
+        )
         if category_id:
             queryset = queryset.filter(category_id=category_id)
         return queryset
@@ -22,7 +31,11 @@ class ProductQuery:
         Fetch a single product by ID.
         """
         try:
-            return Product.objects.select_related("category").prefetch_related("variant_set").get(id=product_id)
+            return (
+                Product.objects.select_related("category")
+                .prefetch_related("variant_set")
+                .get(id=product_id)
+            )
         except Product.DoesNotExist:
             return None
 

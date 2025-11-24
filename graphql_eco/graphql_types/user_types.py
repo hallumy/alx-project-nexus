@@ -3,6 +3,7 @@ from typing import List
 from strawberry import django as strawberry_django
 from users.models import User, Address
 
+
 @strawberry_django.type(Address)
 class AddressType:
     id: strawberry.ID

@@ -7,7 +7,7 @@ from graphql_eco.graphql_types.review_types import ReviewType
 @strawberry.type
 class ReviewMutation:
 
-    # ➕ CREATE REVIEW
+    # CREATE REVIEW
     @strawberry.mutation
     def create_review(
         self,
@@ -80,7 +80,7 @@ class ReviewMutation:
             created_at=str(review.created_at),
         )
 
-    # ❌ DELETE REVIEW
+    #  DELETE REVIEW
     @strawberry.mutation
     def delete_review(self, info, review_id: int) -> bool:
         user = info.context["request"].user

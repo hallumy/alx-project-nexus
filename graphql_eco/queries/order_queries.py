@@ -32,6 +32,7 @@ def get_order_shipment(order: Order) -> Optional[ShipmentType]:
         delivered_at=str(shipment.delivered_at) if shipment.delivered_at else None,
     )
 
+
 @strawberry.type
 class OrderQuery:
 

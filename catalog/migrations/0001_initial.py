@@ -15,111 +15,278 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Discount',
+            name="Discount",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('Code', models.CharField(max_length=20)),
-                ('description', models.CharField(max_length=225)),
-                ('discount_type', models.CharField(max_length=20)),
-                ('minimum_purchase', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('maximum_discount', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('start_date', models.DateTimeField(auto_now=True)),
-                ('end_date', models.DateTimeField(auto_now=True)),
-                ('is_active', models.BooleanField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("Code", models.CharField(max_length=20)),
+                ("description", models.CharField(max_length=225)),
+                ("discount_type", models.CharField(max_length=20)),
+                (
+                    "minimum_purchase",
+                    models.DecimalField(decimal_places=2, max_digits=10),
+                ),
+                (
+                    "maximum_discount",
+                    models.DecimalField(decimal_places=2, max_digits=10),
+                ),
+                ("start_date", models.DateTimeField(auto_now=True)),
+                ("end_date", models.DateTimeField(auto_now=True)),
+                ("is_active", models.BooleanField()),
             ],
         ),
         migrations.CreateModel(
-            name='Cart',
+            name="Cart",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now_add=True)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Category',
+            name="Category",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=45)),
-                ('description', models.TextField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('parent_id', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='catalog.category')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=45)),
+                ("description", models.TextField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "parent_id",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="children",
+                        to="catalog.category",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Product',
+            name="Product",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=45)),
-                ('description', models.TextField(blank=True, null=True)),
-                ('price', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('stock_quantity', models.IntegerField()),
-                ('sku', models.CharField(max_length=80)),
-                ('date_added', models.DateTimeField(auto_now=True)),
-                ('is_active', models.BooleanField()),
-                ('image_url', models.ImageField(blank=True, null=True, upload_to='product/')),
-                ('brand', models.CharField(max_length=45)),
-                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='product', to='catalog.category')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=45)),
+                ("description", models.TextField(blank=True, null=True)),
+                ("price", models.DecimalField(decimal_places=2, max_digits=10)),
+                ("stock_quantity", models.IntegerField()),
+                ("sku", models.CharField(max_length=80)),
+                ("date_added", models.DateTimeField(auto_now=True)),
+                ("is_active", models.BooleanField()),
+                (
+                    "image_url",
+                    models.ImageField(blank=True, null=True, upload_to="product/"),
+                ),
+                ("brand", models.CharField(max_length=45)),
+                (
+                    "category",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="product",
+                        to="catalog.category",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='ProductDiscount',
+            name="ProductDiscount",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('Product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='catalog.product')),
-                ('discount', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='catalog.discount')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "Product",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="catalog.product",
+                    ),
+                ),
+                (
+                    "discount",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="catalog.discount",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Variant',
+            name="Variant",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('variant_name', models.CharField(max_length=45)),
-                ('price', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('stock', models.IntegerField()),
-                ('sku', models.CharField(max_length=80)),
-                ('image_url', models.ImageField(blank=True, null=True, upload_to='product/')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now_add=True)),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='catalog.product')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("variant_name", models.CharField(max_length=45)),
+                ("price", models.DecimalField(decimal_places=2, max_digits=10)),
+                ("stock", models.IntegerField()),
+                ("sku", models.CharField(max_length=80)),
+                (
+                    "image_url",
+                    models.ImageField(blank=True, null=True, upload_to="product/"),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "product",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="catalog.product",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Inventory',
+            name="Inventory",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('quantity', models.IntegerField()),
-                ('updated_at', models.DateTimeField(auto_now_add=True)),
-                ('variant', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='catalog.variant')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("quantity", models.IntegerField()),
+                ("updated_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "variant",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="catalog.variant",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='CartItem',
+            name="CartItem",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('quantity', models.IntegerField()),
-                ('price', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now_add=True)),
-                ('Cart', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='catalog.cart')),
-                ('variant', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='catalog.variant')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("quantity", models.IntegerField()),
+                ("price", models.DecimalField(decimal_places=2, max_digits=10)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "Cart",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="catalog.cart"
+                    ),
+                ),
+                (
+                    "variant",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="catalog.variant",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Wishlist',
+            name="Wishlist",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='WishlistItem',
+            name="WishlistItem",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='catalog.product')),
-                ('wishlist', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='catalog.wishlist')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "product",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="catalog.product",
+                    ),
+                ),
+                (
+                    "wishlist",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="catalog.wishlist",
+                    ),
+                ),
             ],
         ),
     ]

@@ -54,28 +54,36 @@ class JWTLoginAPIView(APIView):
 
         refresh = RefreshToken.for_user(user)
 
-        return Response({
-            "refresh": str(refresh),
-            "access": str(refresh.access_token),
-            "user": UserSerializer(user).data
-        })
-    
+        return Response(
+            {
+                "refresh": str(refresh),
+                "access": str(refresh.access_token),
+                "user": UserSerializer(user).data,
+            }
+        )
+
+
 class JWTLogoutAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
         refresh_token = request.data.get("refresh")
         if not refresh_token:
-            return Response({"error": "Refresh token required"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Refresh token required"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
         try:
             token = RefreshToken(refresh_token)
             token.blacklist()
         except Exception:
-            return Response({"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
-        return Response({"message": "Logged out successfully"}, status=status.HTTP_200_OK)
-
+        return Response(
+            {"message": "Logged out successfully"}, status=status.HTTP_200_OK
+        )
 
 
 class ProfileAPIView(APIView):
@@ -83,3 +91,5 @@ class ProfileAPIView(APIView):
 
     def get(self, request):
         return Response(UserSerializer(request.user).data)
+
+

@@ -20,7 +20,7 @@ class OrderMutation:
             user=user,
             address_id=address_id,
             order_number=f"ORD-{user.id}-{Order.objects.count() + 1}",
-            total_amount=0.0,  # you can calculate total from cart items
+            total_amount=0.0, 
             payment_status="PENDING",
             payment_method=payment_method
         )

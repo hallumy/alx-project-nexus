@@ -4,11 +4,13 @@ from .models import Payment
 from rest_framework.permissions import IsAuthenticated
 from catalog.utils.mixins import AuthenticatedQuerysetMixin
 
+
 class PaymentViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
     """
     Provides CRUD operations for Payment objects via the API.
     Handles payment details, including mobile money transactions and statuses.
     """
+
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
     permission_classes = [IsAuthenticated]

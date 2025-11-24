@@ -4,10 +4,8 @@ from .views import OrderItemViewSet, OrderViewSet, ShipmentViewSet
 
 router = DefaultRouter()
 
-router.register(r'order', OrderViewSet, basename='order')
-router.register(r'orderitem', OrderItemViewSet, basename='orderitem')
-router.register(r'shipment', ShipmentViewSet, basename='shipment')
+router.register(r"order", OrderViewSet, basename="order")
+router.register(r"orderitem", OrderItemViewSet, basename="orderitem")
+router.register(r"shipment", ShipmentViewSet, basename="shipment")
 
-urlpatterns = [
-    path('', include(router.urls))
-]
+urlpatterns = [path("", include(router.urls))]

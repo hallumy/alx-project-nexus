@@ -4,6 +4,7 @@ from graphql_eco.graphql_types.product_types import ProductType, VariantType
 from typing import Optional, List
 from django.db import transaction
 
+
 @strawberry.type
 class ProductMutations:
 
@@ -27,7 +28,7 @@ class ProductMutations:
             price=price,
             brand=brand,
             category_id=category_id,
-            image_url=image_url
+            image_url=image_url,
         )
         return product
 

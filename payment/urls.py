@@ -3,8 +3,6 @@ from rest_framework.routers import DefaultRouter
 from .views import PaymentViewSet
 
 router = DefaultRouter()
-router.register(r'payment', PaymentViewSet, basename='payment')
+router.register(r"payment", PaymentViewSet, basename="payment")
 
-urlpatterns = [
-    path('', include(router.urls))
-]
+urlpatterns = [path("", include(router.urls))]

@@ -7,32 +7,41 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('catalog', '0001_initial'),
+        ("catalog", "0001_initial"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='discount',
-            old_name='Code',
-            new_name='code',
+            model_name="discount",
+            old_name="Code",
+            new_name="code",
         ),
         migrations.RenameField(
-            model_name='productdiscount',
-            old_name='Product',
-            new_name='product',
+            model_name="productdiscount",
+            old_name="Product",
+            new_name="product",
         ),
         migrations.RemoveField(
-            model_name='cartitem',
-            name='Cart',
+            model_name="cartitem",
+            name="Cart",
         ),
         migrations.AlterField(
-            model_name='product',
-            name='category',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='products', to='catalog.category'),
+            model_name="product",
+            name="category",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="products",
+                to="catalog.category",
+            ),
         ),
         migrations.AddField(
-            model_name='cartitem',
-            name='cart',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='items', to='catalog.cart'),
+            model_name="cartitem",
+            name="cart",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="items",
+                to="catalog.cart",
+            ),
         ),
     ]

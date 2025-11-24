@@ -3,6 +3,7 @@ from typing import List
 from strawberry import django as strawberry_django
 from catalog.models import Wishlist, WishlistItem
 
+
 @strawberry_django.type(WishlistItem)
 class WishlistItemType:
     id: strawberry.ID

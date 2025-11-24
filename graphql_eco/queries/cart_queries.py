@@ -3,6 +3,7 @@ from typing import Optional
 from graphql_eco.graphql_types.cart_types import CartType
 from catalog.models import Cart
 
+
 @strawberry.type
 class CartQuery:
 
