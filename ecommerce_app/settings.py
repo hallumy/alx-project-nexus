@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'order',
     'payment',
     'review',
+    'monitoring',
 ]
 
 REST_FRAMEWORK = {
@@ -161,3 +162,13 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
 CELERY_TIMEZONE = 'UTC'
+
+#----CELERY BEAT SCHEDULE------
+from celery.schedules import crontab
+
+CELERY_BEAT_SCHEDULE = {
+    "run-all-service-checks-every-minute": {
+        "task": "monitoring.tasks.run_all_checks",
+        "schedule": crontab(minute="*/1")
+    },
+}
