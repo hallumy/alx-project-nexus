@@ -1,13 +1,60 @@
 services:
+  db:
+    image: "postgres:15-alpine"
+    container_name: "ecommerce-db"
+    environment:
+      POSTGRES_DB : ${DB_NAME}
+      POSTGRES_USER : ${DB_USER}
+      POSTGRES_PASSWORD : ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  web:
+    build: .
+    container_name: "django_app"
+    command: python manage.py runserver
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
   redis:
     image: "redis:8-alpine"
     container_name: "redis_broker"
     ports:
       - "6379:6379"
-  redisInsight:
-    image: "redislabs/redisinsight:latest"
-    container_name: "redisinsight"
-    ports:
-      - "5540:5540"
+
+  celery_worker:
+    build: .
+    container_name: "celery_worker"
+    command: celery -A ecommerce_app worker --loglevel=info
+    environment:
+      DATABASE_URL : ${DATABASE_URL}
+      CELERY_BROKER_URL : ${CELERY_BROKER_URL}
+      CELERY_RESULT_BACKEND : ${CELERY_RESULT_BACKEND}
     depends_on:
+      - db
       - redis
+    volumes:
+      - .:/app
+
+  celery_beat:
+    build: .
+    container_name: "celery_beat"
+    command: celery -A ecommerce_app beat --loglevel=info
+    environment:
+      DATABASE_URL : ${DATABASE_URL}
+      CELERY_BROKER_URL : ${CELERY_BROKER_URL}
+      CELERY_RESULT_BACKEND : ${CELERY_RESULT_BACKEND}
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - .:/app
+
+volumes:
+  postgres_data:
