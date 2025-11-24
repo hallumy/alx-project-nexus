@@ -7,48 +7,46 @@ This project simulates a real-world backend development environment focused on b
 
 The E-Commerce Backend provides a robust API that powers an online product catalog. It includes secure user authentication, efficient product management, and advanced API features such as filtering, sorting, and pagination.
 
-This case study prepares backend engineers to build production-ready systems using modern best practices.
-
-🎯 Project Goals
+Project Goals
 1. CRUD APIs
 
 Full CRUD support for:
 
-Products
+* Products
 
-Categories
+* Categories
 
-User accounts
+* User accounts
 
-JWT-based secure authentication & authorization.
+* JWT-based secure authentication & authorization.
 
 2. Efficient Product Discovery
 
-Filtering (category, price range, availability)
+* Filtering (category, price range, availability)
 
-Sorting (price, date added, name)
+* Sorting (price, date added, name)
 
-Pagination (optimized for large datasets)
+* Pagination (optimized for large datasets)
 
 3. Database Optimization
 
-Scalable relational schema design (PostgreSQL)
+* Scalable relational schema design (PostgreSQL)
 
-Query optimization and indexing for high-performance search
+* Query optimization and indexing for high-performance search
 
-Real-world database structure design principles
+* Real-world database structure design principles
 
 🛠 Technologies Used
-Technology	Purpose
-Python	Core programming language
-Django	Backend framework
-Django REST Framework	API development
-PostgreSQL	Relational database
-JWT (SimpleJWT)	Token-based authentication
-Swagger (drf-yasg)	API documentation
-Django-Environ	Environment variable management
-Docker	Containerization
-CI/CD Pipelines	Automated build/testing
+## Technology	Purpose
+* Python	Core programming language
+* Django	Backend framework
+* Django REST Framework	API development
+* PostgreSQL	Relational database
+* JWT (SimpleJWT)	Token-based authentication
+* Swagger (drf-yasg)	API documentation
+* Django-Environ	Environment variable management
+* Docker	Containerization
+* CI/CD Pipelines	Automated build/testing
 
 ## Base URLs
 * Service	URL
@@ -57,25 +55,116 @@ CI/CD Pipelines	Automated build/testing
 * Swagger Docs	http://localhost:8000/swagger/
 * GraphQL API	http://localhost:8000/graphql/
 
+## DATABASE SCHEMA
+
+### E-Commerce Backend Database Overview
+1. Users
+
+Stores user accounts: username, email, password, name, phone, role (customer/admin/vendor).
+
+Used for authentication, profiles, and permissions.
+
+2. Address
+
+Stores user addresses (home/work).
+
+Linked to Users via user_id.
+
+Frontend uses this for checkout, shipping, and profile address management.
+
+3. Products & Categories
+
+Products: name, description, price, stock, SKU, brand, image, active status.
+
+Categories: organize products; can be nested.
+
+Product Variants: specific versions (size/color), linked to a product.
+
+4. Cart & Cart Items
+
+Cart: linked to a user.
+
+Cart Items: each product variant in the cart with quantity and price.
+
+Used for the shopping cart functionality.
+
+5. Orders & Order Items
+
+Orders: created when a user checks out; includes total, payment status, shipping address.
+
+Order Items: specific product variants in an order, quantity, price.
+
+Used to display order history, details, and track shipments.
+
+6. Payments
+
+Records payment transactions: method (card, mobile), amount, status, timestamps.
+
+Used to confirm payment status and display transaction info.
+
+7. Shipments
+
+Tracks shipping for orders: carrier, tracking number, status, shipped/delivered dates.
+
+Used to show shipment tracking to users.
+
+8. Reviews
+
+Users can review products: rating, comment, timestamp.
+
+Linked to both Users and Products.
+
+9. Wishlist & Wishlist Items
+
+Users can save products for later.
+
+Wishlist is linked to the user; wishlist items link to products.
+
+10. Discounts & Product Discounts
+
+Discounts (coupon codes) with type (percentage/fixed), value, validity.
+
+Product discounts link specific discounts to products.
+
+Relationships Summary
+
+Users ↔ Address, Cart, Orders, Reviews, Wishlist
+
+Products ↔ Categories, Product Variants, Reviews, Product Discounts
+
+Cart ↔ Cart Items ↔ Product Variants
+
+Orders ↔ Order Items ↔ Product Variants
+
+Orders ↔ Payments, Shipments
+
+![Alt text](ERD_ecom.png)
+
+
 ## Authentication (JWT)
 
 All authenticated REST requests require an access token.
 
-Login (get JWT tokens)
+### Login (get JWT tokens)
+
 `POST /api/auth/jwt/login/`
-Body
-'{
+### Body
+```json
+{
   "username": "example",
   "password": "password123"
 }
-`
-Response
-`{
+```
+
+### Response
+```json
+{
   "refresh": "xxx",
   "access": "yyy"
 }
-`
-Authorization Headers
+```
+
+### Authorization Headers
 `Authorization: Bearer <access_token>`
 
 ## API Endpoints Summary
@@ -178,199 +267,105 @@ Shipment tracking
 | ------ | ---------------------------- |
 | GET    | `/api/shipments/{order_id}/` |
 
-## Database Schema
 
-### User Table 
+## Instructions
 
-| Field       | Type     | Notes                       |
-| ----------- | -------- | --------------------------- |
-| id          | int (PK) | Auto-increment              |
-| username    | varchar  | Unique                      |
-| email       | varchar  | Unique                      |
-| password    | varchar  | Hashed                      |
-| first_name  | varchar  |                             |
-| last_name   | varchar  |                             |
-| phone       | varchar  | Optional                    |
-| role        | varchar  | ("admin", "customer", Vendor) |
-| date_joined | datetime | ISO format                  |
+### 1. **Create a Django Project**
 
-### Address Table 
-| Field        | Type                | Notes                  |
-| ------------ | ------------------- | ---------------------- |
-| id           | int (PK)            |                        |
-| user_id      | int (FK → users.id) |                        |
-| street       | varchar             |                        |
-| city         | varchar             |                        |
-| region       | varchar             |                        |
-| country      | varchar             |                        |
-| postal_code  | varchar             |                        |
-| address_type | varchar             | ("home", "work") |
+#### Set up the Django Project
+Create a new Django project named `ecommerce_app`.
 
-### Product Table
+    django-admin startproject ecommerce_app
 
-| Field          | Type                   | Notes |
-| -------------- | ---------------------- | ----- |
-| id             | int (PK)               |       |
-| category_id    | int (FK → category.id) |       |
-| name           | varchar                |       |
-| description    | text                   |       |
-| price          | decimal                |       |
-| stock_quantity | int                    |       |
-| sku            | varchar                |       |
-| brand          | varchar                |       |
-| image_url      | varchar                |       |
-| is_active      | boolean                |       |
-| date_added     | datetime               |       |
+Create an App within the Project
 
-### Product Variant Table
-| Field        | Type                  | Notes                 |
-| ------------ | --------------------- | --------------------- |
-| id           | int (PK)              |                       |
-| product_id   | int (FK → product.id) |                       |
-| variant_name | varchar               | (e.g., "Red - Large") |
-| sku          | varchar               | Unique                |
-| price        | decimal               |                       |
-| stock        | int                   |                       |
-| image_url    | varchar               |                       |
-| created_at   | datetime              |                       |
-| updated_at   | datetime              |                       |
+Inside the project, create an app named users:
 
-### Category Table
+    python manage.py startapp users
 
-| Field       | Type                   | Notes                 |
-| ----------- | ---------------------- | --------------------- |
-| id          | int (PK)               |                       |
-| name        | varchar                |                       |
-| description | text                   |                       |
-| parent_id   | int (nullable)         | For nested categories |
-| created_at  | datetime                |                       |
+Install Necessary Packages
 
-### Cart Table
+Install the required dependencies using pip.
 
-| Field      | Type                | Notes |
-| ---------- | ------------------- | ----- |
-| id         | int (PK)            |       |
-| user_id    | int (FK → users.id) |       |
-| created_at | datetime            |       |
-| updated_at | datetime            |       |
+    pip install django djangorestframework django-cors-headers celery rabbitmq drf-yasg
 
-### Cart Item Table
+Make sure that you're in a virtual environment.
 
-| Field      | Type                          | Notes          |
-| ---------- | ----------------------------- | -------------- |
-| id         | int (PK)                      |                |
-| cart_id    | int (FK → cart.id)            |                |
-| variant_id | int (FK → product_variant.id) |                |
-| quantity   | int                           |                |
-| price      | decimal                       | Snapshot price |
-| created_at | datetime                      |                |
-| updated_at | datetime                      |                |
+### 2. **Configure Settings**
+
+#### Configure for REST Framework and CORS Headers
+
+Open settings.py and add 'rest_framework' and 'corsheaders' to the INSTALLED_APPS:
+
+    INSTALLED_APPS = [
+        'rest_framework',
+        'corsheaders',
+        'users',
+    ]
+
+Add CORS middleware to the MIDDLEWARE list in settings.py:
+
+    MIDDLEWARE = [
+        'corsheaders.middleware.CorsMiddleware',
+    ]
 
 
-### Order Table
+Set up the Database Configuration for MySQL
 
-| Field          | Type                  | Notes                     |
-| -------------- | --------------------- | ------------------------- |
-| id             | int (PK)              |                           |
-| user_id        | int (FK → users.id)   |                           |
-| address_id     | int (FK → address.id) |                           |
-| order_number   | varchar               | Unique                    |
-| total_amount   | decimal               |                           |
-| payment_status | varchar               | ("paid", "pending", etc.) |
-| order_date     | datetime              |                           |
-| shipped_date   | datetime (nullable)   |                           |
-| payment_method | varchar               |                           |
+Install mysqlclient for connecting to a Postgre database:
 
+    pip install postgresql postgresql-contrib
 
-### Order Item Table
+Use the django-environ package to handle database credentials securely. Install django-environ:
 
-| Field      | Type                          | Notes            |
-| ---------- | ----------------------------- | ---------------- |
-| id         | int (PK)                      |                  |
-| order_id   | int (FK → order.id)           |                  |
-| variant_id | int (FK → product_variant.id) |                  |
-| quantity   | int                           |                  |
-| price      | decimal                       | Unit price       |
-| subtotal   | decimal                       | price × quantity |
+    pip install django-dotenv
 
-### Review Table
+3. Add Swagger Documentation
+Install drf-yasg
 
-| Field      | Type                  | Notes |
-| ---------- | --------------------- | ----- |
-| id         | int (PK)              |       |
-| user_id    | int (FK → users.id)   |       |
-| product_id | int (FK → product.id) |       |
-| rating     | int                   | 1–5   |
-| comment    | text                  |       |
-| created_at | datetime              |       |
+Install the drf-yasg package for Swagger API documentation:
 
-### Wishlist Table
+    pip install drf-yasg
 
-| Field      | Type                   | Notes |
-| ---------- | ---------------------- | ----- |
-| id         | int (PK)               |       |
-| user_id    | int (FK → users.id)    |       |
-| created_at | varchar (ISO datetime) |       |
+Configure Swagger for Auto Documentation
+
+Open urls.py and add the following configuration to enable Swagger documentation:
 
 
-### Wishlist Item Table
 
-| Field       | Type                   | Notes |
-| ----------- | ---------------------- | ----- |
-| id          | int (PK)               |       |
-| wishlist_id | int (FK → wishlist.id) |       |
-| product_id  | int (FK → product.id)  |       |
-| created_at  | datetime               |       |
+3. Add Swagger Documentation
+Install drf-yasg
 
-### Payment Table
+Install the drf-yasg package for Swagger API documentation:
 
-| Field               | Type                | Notes                   |
-| ------------------- | ------------------- | ----------------------- |
-| id                  | int (PK)            |                         |
-| order_id            | int (FK → order.id) |                         |
-| payment_method      | varchar             | ("card", "mpesa", etc.) |
-| transaction_id      | varchar             |                         |
-| amount              | decimal             |                         |
-| phone_number        | varchar             | For mobile payments     |
-| checkout_request_id | varchar             |                         |
-| result_code         | varchar             |                         |
-| result_description  | text                |                         |
-| payment_status      | varchar             |                         |
-| paid_at             | datetime            |                         |
-| payment_date        | datetime            |                         |
+    pip install drf-yasg
 
-### Discount Table
+Configure Swagger for Auto Documentation
 
-| Field            | Type                             | Notes |
-| ---------------- | -------------------------------- | ----- |
-| id               | int (PK)                         |       |
-| code             | varchar                          |       |
-| description      | varchar                          |       |
-| discount_type    | varchar ("percentage" / "fixed") |       |
-| discount_value   | varchar                          |       |
-| minimum_purchase | decimal                          |       |
-| maximum_discount | decimal                          |       |
-| start_date       | datetime                         |       |
-| end_date         | datetime                         |       |
-| is_active        | boolean                          |       |
+Open urls.py and add the following configuration to enable Swagger documentation:
 
-### Product Discount
+    from rest_framework import permissions
+    from drf_yasg.views import get_schema_view
+    from drf_yasg import openapi
+    from django.urls import path
 
-| Field       | Type                  | Notes |
-| ----------- | --------------------- | ----- |
-| id          | int (PK)              |       |
-| discount_id | int (FK)              |       |
-| product_id  | int (FK → product.id) |       |
+    # Set up Swagger schema view
+    schema_view = get_schema_view(
+        openapi.Info(
+            title="Alx Travel API",
+            default_version='v1',
+            description="API documentation for the Project",
+            contact=openapi.Contact(email="contact@ecommerce.com"),
+            license=openapi.License(name="BSD License"),
+        ),
+        public=True,
+        permission_classes=(permissions.AllowAny,),
+    )
 
-### Shipment Table
+    urlpatterns = [
+        path('admin/', admin.site.urls),
+        path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='swagger-schema'),
+    ]
 
-| Field           | Type                | Notes |
-| --------------- | ------------------- | ----- |
-| id              | int (PK)            |       |
-| order_id        | int (FK → order.id) |       |
-| tracking_number | varchar             |       |
-| carrier         | varchar             |       |
-| status          | varchar             |       |
-| shipped_at      | datetime            |       |
-| delivered_at    | datetime            |       |
+This will make the Swagger UI available at http://localhost:8000/swagger/ once you run the server.
 
