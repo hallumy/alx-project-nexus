@@ -3,10 +3,11 @@ from .serializers import UserSerializer, AddressSerializer
 from rest_framework.permissions import IsAuthenticated
 from .models import User, Address
 from .permissions import IsAdmin, IsVendor, IsCustomer
-from catalog.utils.mixins import AuthenticatedQuerysetMixin
+from utils.mixins import AuthenticatedQuerysetMixin, CachedQuerysetMixin
+from utils.pagination import DefaultPagination
+from django_filters.rest_framework import DjangoFilterBackend
 
-
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(CachedQuerysetMixin, viewsets.ModelViewSet):
     """
     ViewSet for managing role based data access:
     -Admin : Full access
@@ -16,6 +17,14 @@ class UserViewSet(viewsets.ModelViewSet):
 
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = DefaultPagination
+
+    filterset_fields = ["role", "email", "username"]
+    ordering_fields = ["id", "date_joined", "username"]
+    ordering = ["-date_joined"]
+
+    cache_prefix = "user"
+    cache_timeout = 60 * 10
 
     def get_queryset(self):
         if getattr(self, "swagger_fake_view", False):
@@ -47,7 +56,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
 
-class AddressViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
+class AddressViewSet(CachedQuerysetMixin, AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
     """
     Viewsets for managing addresses with role-based restrictions
     """
@@ -56,6 +65,14 @@ class AddressViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
     serializer_class = AddressSerializer
     permission_classes = [IsAuthenticated]
     user_field = "user"
+
+    filterset_fields = ["city", "country", "region", "address_type"]
+    ordering_fields = ["id", "created_at"]
+    ordering = ["id"]
+
+    cache_prefix = "address"
+    cache_timeout = 60 * 20
+
 
     def perform_create(self, serializer):
         serializer.save = self.request.user

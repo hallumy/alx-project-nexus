@@ -3,7 +3,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import ValidationError
 from .models import Review
 from .serializers import ReviewSerializer
-from catalog.utils.mixins import AuthenticatedQuerysetMixin
+from utils.mixins import AuthenticatedQuerysetMixin
+from utils.pagination import DefaultPagination
 
 
 class ReviewViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
@@ -15,6 +16,8 @@ class ReviewViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = DefaultPagination
+
 
     user_field = "user"
 

@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from .serializers import PaymentSerializer
 from .models import Payment
 from rest_framework.permissions import IsAuthenticated
-from catalog.utils.mixins import AuthenticatedQuerysetMixin
+from utils.mixins import AuthenticatedQuerysetMixin
 
 
 class PaymentViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):

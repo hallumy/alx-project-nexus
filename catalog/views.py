@@ -1,18 +1,13 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from users.permissions import IsAdmin, IsCustomer, IsVendor
-from .utils.mixins import AuthenticatedQuerysetMixin
+from utils.mixins import AuthenticatedQuerysetMixin, CachedQuerysetMixin
+from utils.pagination import DefaultPagination
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter
 from .models import (
-    Category,
-    Product,
-    Variant,
-    Cart,
-    CartItem,
-    Wishlist,
-    WishlistItem,
-    Discount,
-    ProductDiscount,
-    Inventory,
+    Category, Product, Variant, Cart, CartItem, Wishlist,
+    WishlistItem, Discount, ProductDiscount, Inventory,
 )
 from .serializers import (
     CategorySerializer,
@@ -28,7 +23,7 @@ from .serializers import (
 )
 
 
-class CategoryViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(CachedQuerysetMixin, viewsets.ModelViewSet):
     """
     ViewSet for managing product categories.
     Supports nested retrieval of child categories and related products.
@@ -40,6 +35,17 @@ class CategoryViewSet(viewsets.ModelViewSet):
         "product__variant_set",
     )
     serializer_class = CategorySerializer
+    pagination_class = DefaultPagination
+
+    cache_prefix = "categories"
+    cache_timeout = 60 * 30
+
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_fields = ["parent", "name"]
+    ordering_fields = ["name", "created_at", "id"]
+    ordering = ["name"]
+
+
 
     def get_permissions(self):
         if self.action in ["list", "retrieve"]:
@@ -47,7 +53,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
         return [IsAuthenticated(), IsAdmin()]
 
 
-class ProductViewSet(viewsets.ModelViewSet):
+class ProductViewSet(CachedQuerysetMixin, viewsets.ModelViewSet):
     """
     ViewSet for managing products.
     Prefetches variants and selects related category for optimization.
@@ -63,7 +69,17 @@ class ProductViewSet(viewsets.ModelViewSet):
         )
     )
     serializer_class = ProductSerializer
+    pagination_class = DefaultPagination
+
     lookup_field = "id"
+
+    cache_prefix = "products"
+    cache_timeout = 60 * 20
+
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_fields = ["category", "brand", "is_active"]
+    ordering_fields = ["price", "date_added", "name", "id"]
+    ordering = ["-date_added"]
 
     def get_permissions(self):
         if self.action in ["list", "retrieve"]:
@@ -71,7 +87,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         return [IsAuthenticated(), IsAdmin()]
 
 
-class VariantViewSet(viewsets.ModelViewSet):
+class VariantViewSet(CachedQuerysetMixin, viewsets.ModelViewSet):
     """
     ViewSet for managing product variants.
     Selects related product to optimize queries.
@@ -79,7 +95,16 @@ class VariantViewSet(viewsets.ModelViewSet):
 
     queryset = Variant.objects.all().select_related("product")
     serializer_class = VariantSerializer
+    pagination_class = DefaultPagination
     lookup_field = "sku"
+
+    cache_prefix = "variants"
+    cache_timeout = 60 * 10
+
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_fields = ["product", "sku"]
+    ordering_fields = ["price", "stock", "id"]
+    ordering = ["-id"]
 
     def get_permissions(self):
         if self.action in ["list", "retrieve"]:
@@ -107,6 +132,12 @@ class CartItemViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
     serializer_class = CartSerializer
     permission_classes = [IsAuthenticated]
     user_field = "cart__user"
+
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_fields = ["variant", "cart"]
+    ordering_fields = ["quantity", "price"]
+    ordering = ["-created_at"]
+
 
 
 class WishlistViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
@@ -140,6 +171,9 @@ class DiscountViewSet(viewsets.ModelViewSet):
     serializer_class = DiscountSerializer
     permission_classes = [IsAuthenticated, IsAdmin]
 
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["code", "discount_type", "is_active"]
+
 
 class ProductDiscountViewSet(viewsets.ModelViewSet):
     """
@@ -151,6 +185,10 @@ class ProductDiscountViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, IsAdmin]
     queryset = ProductDiscount.objects.all().select_related("discount", "product")
 
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["product", "discount"]
+
+
 
 class InventoryViewSet(viewsets.ModelViewSet):
     """
@@ -161,3 +199,8 @@ class InventoryViewSet(viewsets.ModelViewSet):
     queryset = Inventory.objects.all().select_related("variant")
     serializer_class = InventorySerializer
     permission_classes = [IsAuthenticated, (IsAdmin | IsVendor)]
+
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_fields = ["variant"]
+    ordering_fields = ["quantity", "updated_at"]
+    ordering = ["-updated_at"]

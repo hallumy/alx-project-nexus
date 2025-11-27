@@ -2,10 +2,14 @@ from rest_framework import viewsets
 from .serializers import OrderItemSerializer, OrderSerializer, ShipmentSerializer
 from .models import Order, OrderItem, Shipment
 from rest_framework.permissions import IsAuthenticated
-from catalog.utils.mixins import AuthenticatedQuerysetMixin
+from utils.mixins import AuthenticatedQuerysetMixin, CachedQuerysetMixin
+from utils.pagination import DefaultPagination
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter
 
 
-class OrderViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
+
+class OrderViewSet(CachedQuerysetMixin, AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
     """
     API endpoint for viewing and editing orders.
     Provides list, create, retrieve, update, and delete actions.
@@ -14,9 +18,19 @@ class OrderViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = DefaultPagination
+
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_fields = ["user", "payment_status", "order_date", "shipped_date"]
+
+    ordering_fields = ["order_date", "total_amount", "payment_status", "id"]
+    ordering = ["-order_date"]
+
+    cache_prefix = "order"
+    cache_timeout = 60 * 10
 
 
-class OrderItemViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
+class OrderItemViewSet(CachedQuerysetMixin, AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
     """
     API endpoint for viewing and editing order items.
     Includes related product variant and parent order details.
@@ -25,9 +39,19 @@ class OrderItemViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
     queryset = OrderItem.objects.all()
     serializer_class = OrderItemSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = DefaultPagination
+
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_fields = ["order", "variant", "quantity", "price"]
+
+    ordering_fields = ["quantity", "price", "subtotal", "id"]
+    ordering = ["-id"]
+
+    cache_prefix = "order_item"
+    cache_timeout = 60 * 15
 
 
-class ShipmentViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
+class ShipmentViewSet(CachedQuerysetMixin, AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
     """
     API endpoint for viewing and editing shipments.
     Includes shipment status, tracking number, and related order info.
@@ -36,3 +60,14 @@ class ShipmentViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
     queryset = Shipment.objects.all()
     serializer_class = ShipmentSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = DefaultPagination
+
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_fields = ["order", "carrier", "status", "shipped_at", "delivered_at"]
+
+    ordering_fields = ["status", "shipped_at", "delivered_at", "id"]
+    ordering = ["-shipped_at"]
+
+    cache_prefix = "shipment"
+    cache_timeout = 60 * 20 
+

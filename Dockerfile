@@ -10,3 +10,6 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 COPY . .
+COPY startup.sh .
+RUN chmod +x startup.sh
+ENTRYPOINT [ "startup.sh" ]
