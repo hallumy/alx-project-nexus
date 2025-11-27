@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'python:3.10'
+            args '-u root:root'
+        }
+    }
 
     environment {
         HEROKU_APP_NAME = "ecommerce-app-d702fa150d9f"
@@ -7,36 +12,34 @@ pipeline {
     }
 
     stages {
-
         stage('Checkout') {
             steps {
-                checkout([$class: 'GitSCM',
-                    branches: [[name: '*/main']],
-                    userRemoteConfigs: [[
-                        url: 'https://github.com/hallumy/alx-project-nexus.git',
+                git branch: 'main', url: 'https://github.com/hallumy/alx-project-nexus.git',
                         credentialsId: 'github-pat'
-                    ]]
-                ])
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t django-app .'
+                sh '''
+                docker build -t django-app .
+                '''
             }
         }
 
-        stage('Run Tests') {
+        stage('Run Tests in Docker') {
             steps {
-                sh 'docker compose run web pytest || true'
+                sh '''
+                docker run --rm django-app sh -c "python manage.py test"
+                '''
             }
+
         }
 
         stage('Heroku Login') {
             steps {
                 sh '''
-                echo $HEROKU_API_KEY | heroku login --interactive
-                heroku container:login
+                echo $HEROKU_API_KEY | heroku container:login
                 '''
             }
         }
@@ -44,7 +47,8 @@ pipeline {
         stage('Deploy to Heroku') {
             steps {
                 sh '''
-                heroku container:push web --app $HEROKU_APP_NAME
+                docker tag django-app registry.heroku.com/$HEROKU_APP_NAME/web
+                docker push registry.heroku.com/$HEROKU_APP_NAME/web
                 heroku container:release web --app $HEROKU_APP_NAME
                 '''
             }
