@@ -4,6 +4,7 @@ pipeline {
     environment {
         HEROKU_APP_NAME = "ecommerce-app-d702fa150d9f"
         HEROKU_API_KEY = credentials('HEROKU_API')
+        DJANGO_SECRET_KEY = credentials('DJANGO_SECRET_KEY')
     }
 
     stages {
@@ -24,8 +25,13 @@ pipeline {
 
         stage('Run Tests in Docker') {
             steps {
-                sh 'docker run --rm django-app sh -c "python manage.py test"'
-
+                sh '''
+                docker run --rm \
+                  -e SECRET_KEY=$DJANGO_SECRET_KEY \
+                  -v $WORKSPACE:/app \
+                  -w /app \
+                  django-app sh -c "python manage.py test"
+                '''
             }
 
         }
