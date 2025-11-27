@@ -12,7 +12,7 @@ class Order(models.Model):
     address = models.ForeignKey("users.Address", on_delete=models.CASCADE)
     order_number = models.IntegerField()
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    payment_status = models.CharField(max_length=45)
+    status = models.CharField(max_length=45)
     order_date = models.DateTimeField(auto_now_add=True)
     shipped_date = models.DateTimeField(auto_now_add=True)
     payment_method = models.CharField(max_length=45)
