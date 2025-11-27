@@ -24,7 +24,7 @@ pipeline {
 
         stage('Run Tests in Docker') {
             steps {
-                sh 'docker run --rm -v $WORKSPACE:/app -w /app python:3.10 sh -c "python manage.py test"'
+                sh 'docker run --rm django-app sh -c "python manage.py test"'
 
             }
 
