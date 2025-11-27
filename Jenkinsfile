@@ -2,8 +2,7 @@ pipeline {
     agent any
 
     environment {
-        HEROKU_APP_NAME = "ecommerce-app-d702fa150d9f
-"
+        HEROKU_APP_NAME = "ecommerce-app-d702fa150d9f"
         HEROKU_API_KEY = credentials('HEROKU_API')
     }
 
