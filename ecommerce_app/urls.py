@@ -21,6 +21,8 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from strawberry.django.views import GraphQLView
 from graphql_eco.schema import schema
+from django.http import JsonResponse
+from django.shortcuts import redirect
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -39,7 +41,17 @@ schema_view = get_schema_view(
     permission_classes=(permissions.AllowAny,),
 )
 
+def home(request):
+    return JsonResponse({"message": "Ecommerce API is running"})
+
+
+def redirect_to_swagger(request):
+    return redirect('/swagger/')
+
+
 urlpatterns = [
+    path('', home),
+    path('', redirect_to_swagger),
     path('admin/', admin.site.urls),
     path('api/', include('users.urls')),
     path('api/', include('catalog.urls')),
