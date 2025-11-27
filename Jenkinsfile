@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'python:3.10'
-            args '-u root:root'
-        }
-    }
+    agent any
 
     environment {
         HEROKU_APP_NAME = "ecommerce-app-d702fa150d9f"
@@ -29,9 +24,8 @@ pipeline {
 
         stage('Run Tests in Docker') {
             steps {
-                sh '''
-                docker run --rm django-app sh -c "python manage.py test"
-                '''
+                sh 'docker run --rm -v $WORKSPACE:/app -w /app python:3.10 sh -c "python manage.py test"'
+
             }
 
         }
