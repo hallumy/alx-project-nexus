@@ -1,0 +1,7 @@
+build:
+  docker:
+    web: Dockerfile
+
+run:
+  web: gunicorn ecommerce_app.wsgi:application --bind 0.0.0.0:$PORT
+
