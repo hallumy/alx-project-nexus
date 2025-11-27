@@ -103,13 +103,18 @@ WSGI_APPLICATION = 'ecommerce_app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+if DEBUG:
+    DB_HOST = "localhost"
+else:
+    DB_HOST = "db"
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('DB_NAME', 'ecommerce_db'),
         'USER': os.getenv('DB_USER', 'dbuser'),
         'PASSWORD': os.getenv('DB_PASSWORD'), 
-        'HOST': os.getenv('DB_HOST', 'db'),
+        'HOST': DB_HOST,
         'PORT': os.getenv('DB_PORT', '5432'),
     }   
 }
