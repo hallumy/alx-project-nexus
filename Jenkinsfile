@@ -28,7 +28,6 @@ pipeline {
                 sh '''
                 docker run --rm \
                   -e SECRET_KEY=$DJANGO_SECRET_KEY \
-                  -v $WORKSPACE:/app \
                   -w /app \
                   django-app sh -c "python manage.py test"
                 '''
