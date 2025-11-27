@@ -26,7 +26,7 @@ pipeline {
         stage('Run Tests in Docker') {
             steps {
                 sh '''
-                docker-compose run --rm \
+                docker run --rm \
                   -e DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY \
                   -w /app \
                   django-app sh -c "python manage.py test"
