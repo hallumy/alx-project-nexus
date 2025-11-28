@@ -53,6 +53,9 @@ class VariantSerializer(serializers.ModelSerializer):
 
 class CategorySerializer(serializers.ModelSerializer):
     """Serializer for the category model"""
+    parent_id = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.all(), required=False, allow_null=True
+    )
     children = serializers.SerializerMethodField()
     products = ProductSerializer(many=True, read_only=True)
 
