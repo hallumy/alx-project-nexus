@@ -34,24 +34,35 @@ pipeline {
             }
 
         }
-
         stage('Heroku Login') {
             steps {
-                sh '''
-                echo $HEROKU_API_KEY | heroku container:login
-                '''
+                withEnv(["HEROKU_API_KEY=${HEROKU_API}"]) {
+                    sh '''
+                        echo "Logging into Heroku..."
+                        echo $HEROKU_API_KEY | docker login --username=_ --password-stdin registry.heroku.com
+                    '''
+                }
             }
         }
 
         stage('Deploy to Heroku') {
             steps {
-                sh '''
-                docker tag django-app registry.heroku.com/$HEROKU_APP_NAME/web
-                docker push registry.heroku.com/$HEROKU_APP_NAME/web
-                heroku container:release web --app $HEROKU_APP_NAME
-                '''
+                withEnv(["HEROKU_API_KEY=${HEROKU_API}"]) {
+                    sh '''
+                        echo "Tagging image..."
+                        docker tag django-app registry.heroku.com/$HEROKU_APP_NAME/web
+
+                        echo "Pushing to Heroku registry..."
+                        docker push registry.heroku.com/$HEROKU_APP_NAME/web
+
+                        echo "Releasing new version..."
+                        heroku container:release web --app $HEROKU_APP_NAME
+                    '''
+                }
             }
         }
+
+
 
         stage('Migrate & Collectstatic') {
             steps {
