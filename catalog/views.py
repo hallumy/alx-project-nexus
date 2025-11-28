@@ -47,8 +47,6 @@ class CategoryViewSet(CachedQuerysetMixin, viewsets.ModelViewSet):
     ordering_fields = ["name", "created_at", "id"]
     ordering = ["name"]
 
-
-
     def get_permissions(self):
         if self.action in ["list", "retrieve"]:
             return [AllowAny()]
