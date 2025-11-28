@@ -31,10 +31,10 @@ class Product(models.Model):
     name = models.CharField(max_length=45)
     description = models.TextField(blank=True, null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    stock_quantity = models.IntegerField()
+    stock_quantity = models.PositiveIntegerField(default=0)
     sku = models.CharField(max_length=80)
     date_added = models.DateTimeField(auto_now=True)
-    is_active = models.BooleanField()
+    is_active = models.BooleanField(default=True, null=False)
     image_url = models.ImageField(upload_to="product/", blank=True, null=True)
     brand = models.CharField(max_length=45)
 
@@ -50,8 +50,8 @@ class Variant(models.Model):
 
     product = models.ForeignKey("Product", on_delete=models.CASCADE)
     variant_name = models.CharField(max_length=45)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    stock = models.IntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    stock = models.PositiveIntegerField(default=0)
     sku = models.CharField(max_length=80)
     image_url = models.ImageField(upload_to="product/", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -68,7 +68,7 @@ class Inventory(models.Model):
     """
 
     variant = models.ForeignKey("Variant", on_delete=models.CASCADE)
-    quantity = models.IntegerField()
+    quantity = models.IntegerField(default=0)
     updated_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -88,7 +88,7 @@ class Discount(models.Model):
     maximum_discount = models.DecimalField(max_digits=10, decimal_places=2)
     start_date = models.DateTimeField(auto_now=True)
     end_date = models.DateTimeField(auto_now=True)
-    is_active = models.BooleanField()
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"Discount {self.code}"
