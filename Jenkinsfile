@@ -35,7 +35,6 @@ pipeline {
 
         }
     stage('Deploy to Heroku') {
-    stage('Deploy to Heroku') {
     steps {
         withCredentials([string(credentialsId: 'HEROKU_API', variable: 'HEROKU_API_KEY')]) {
             sh '''
