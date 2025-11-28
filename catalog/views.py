@@ -5,6 +5,7 @@ from utils.mixins import AuthenticatedQuerysetMixin, CachedQuerysetMixin
 from utils.pagination import DefaultPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
+from rest_framework.renderers import JSONRenderer
 from .models import (
     Category, Product, Variant, Cart, CartItem, Wishlist,
     WishlistItem, Discount, ProductDiscount, Inventory,
@@ -61,16 +62,12 @@ class ProductViewSet(CachedQuerysetMixin, viewsets.ModelViewSet):
 
     queryset = (
         Product.objects.all()
-        .select_related(
-            "category",
-        )
-        .prefetch_related(
-            "variant_set",
-        )
+        .select_related("category")
+        .prefetch_related("variant_set")
     )
     serializer_class = ProductSerializer
     pagination_class = DefaultPagination
-
+    renderer_classes = [JSONRenderer]
     lookup_field = "id"
 
     cache_prefix = "products"
