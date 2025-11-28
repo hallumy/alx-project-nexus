@@ -1,6 +1,7 @@
 from django.core.cache import cache
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
+from rest_framework.response import Response
 import hashlib
 import json
 
@@ -33,8 +34,9 @@ class CachedQuerysetMixin:
         cache_key = self.generate_cache_key(request)
         cached = cache.get(cache_key)
 
-        if cached:
-            return cached
+        if cached is not None:
+            return Response(cached)
+
 
         response = super().list(request, *args, **kwargs)
 
