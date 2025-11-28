@@ -36,9 +36,9 @@ pipeline {
         }
         stage('Heroku Login') {
             steps {
-                withEnv(["HEROKU_API_KEY=${HEROKU_API}"]) {
+                withCredentials([string(credentialsId: 'HEROKU_API', variable: 'HEROKU_API_KEY')]) {
                     sh '''
-                        echo "Logging into Heroku..."
+                        echo "Logging into Heroku Container Registry..."
                         echo $HEROKU_API_KEY | docker login --username=_ --password-stdin registry.heroku.com
                     '''
                 }
@@ -47,21 +47,20 @@ pipeline {
 
         stage('Deploy to Heroku') {
             steps {
-                withEnv(["HEROKU_API_KEY=${HEROKU_API}"]) {
+                withCredentials([string(credentialsId: 'HEROKU_API', variable: 'HEROKU_API_KEY')]) {
                     sh '''
-                        echo "Tagging image..."
+                        echo "Tagging Docker image..."
                         docker tag django-app registry.heroku.com/$HEROKU_APP_NAME/web
 
-                        echo "Pushing to Heroku registry..."
+                        echo "Pushing Docker image..."
                         docker push registry.heroku.com/$HEROKU_APP_NAME/web
 
-                        echo "Releasing new version..."
+                        echo "Releasing on Heroku..."
                         heroku container:release web --app $HEROKU_APP_NAME
                     '''
                 }
             }
         }
-
 
 
         stage('Migrate & Collectstatic') {
