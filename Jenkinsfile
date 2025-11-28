@@ -27,8 +27,8 @@ pipeline {
             steps {
                 sh '''
                 docker run --rm \
-                  -e GITHUB_CI=true \
                   -e DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY \
+                  -e DATABASE_URL=sqlite:///test.db \
                   django-app sh -c "python manage.py test"
                 '''
             }
