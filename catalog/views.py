@@ -33,7 +33,7 @@ class CategoryViewSet(CachedQuerysetMixin, viewsets.ModelViewSet):
     queryset = Category.objects.all().prefetch_related(
         "children",
         "products",
-        "product__variant_set",
+        "products__variant_set",
     )
     serializer_class = CategorySerializer
     pagination_class = DefaultPagination
@@ -43,7 +43,7 @@ class CategoryViewSet(CachedQuerysetMixin, viewsets.ModelViewSet):
     cache_timeout = 60 * 30
 
     filter_backends = [DjangoFilterBackend, OrderingFilter]
-    filterset_fields = ["parent", "name"]
+    filterset_fields = ["parent_id", "name"]
     ordering_fields = ["name", "created_at", "id"]
     ordering = ["name"]
 
