@@ -6,7 +6,7 @@ from utils.mixins import AuthenticatedQuerysetMixin, CachedQuerysetMixin
 from utils.pagination import DefaultPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
-
+from rest_framework.renderers import JSONRenderer
 
 
 class OrderViewSet(CachedQuerysetMixin, AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
@@ -19,6 +19,7 @@ class OrderViewSet(CachedQuerysetMixin, AuthenticatedQuerysetMixin, viewsets.Mod
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = DefaultPagination
+    renderer_classes = [JSONRenderer]
 
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ["user", "payment_status", "order_date", "shipped_date"]
@@ -40,6 +41,7 @@ class OrderItemViewSet(CachedQuerysetMixin, AuthenticatedQuerysetMixin, viewsets
     serializer_class = OrderItemSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = DefaultPagination
+    renderer_classes = [JSONRenderer]
 
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ["order", "variant", "quantity", "price"]
@@ -61,6 +63,7 @@ class ShipmentViewSet(CachedQuerysetMixin, AuthenticatedQuerysetMixin, viewsets.
     serializer_class = ShipmentSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = DefaultPagination
+    renderer_classes = [JSONRenderer]
 
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ["order", "carrier", "status", "shipped_at", "delivered_at"]

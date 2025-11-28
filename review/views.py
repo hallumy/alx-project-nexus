@@ -5,6 +5,7 @@ from .models import Review
 from .serializers import ReviewSerializer
 from utils.mixins import AuthenticatedQuerysetMixin
 from utils.pagination import DefaultPagination
+from rest_framework.renderers import JSONRenderer
 
 
 class ReviewViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
@@ -17,6 +18,7 @@ class ReviewViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = DefaultPagination
+    renderer_classes = [JSONRenderer]
 
 
     user_field = "user"

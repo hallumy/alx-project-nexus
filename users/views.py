@@ -6,6 +6,7 @@ from .permissions import IsAdmin, IsVendor, IsCustomer
 from utils.mixins import AuthenticatedQuerysetMixin, CachedQuerysetMixin
 from utils.pagination import DefaultPagination
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.renderers import JSONRenderer
 
 class UserViewSet(CachedQuerysetMixin, viewsets.ModelViewSet):
     """
@@ -18,6 +19,7 @@ class UserViewSet(CachedQuerysetMixin, viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = DefaultPagination
+    renderer_classes = [JSONRenderer]
 
     filterset_fields = ["role", "email", "username"]
     ordering_fields = ["id", "date_joined", "username"]

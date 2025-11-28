@@ -3,7 +3,7 @@ from .serializers import PaymentSerializer
 from .models import Payment
 from rest_framework.permissions import IsAuthenticated
 from utils.mixins import AuthenticatedQuerysetMixin
-
+from rest_framework.renderers import JSONRenderer
 
 class PaymentViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
     """
@@ -14,3 +14,4 @@ class PaymentViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
     permission_classes = [IsAuthenticated]
+    renderer_classes = [JSONRenderer]
