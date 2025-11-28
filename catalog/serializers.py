@@ -53,13 +53,13 @@ class VariantSerializer(serializers.ModelSerializer):
 
 class CategorySerializer(serializers.ModelSerializer):
     """Serializer for the category model"""
-
+    parent = serializers.PrimaryKeyRelatedField(read_only=True, source='parent_id')
     children = serializers.SerializerMethodField()
     products = ProductSerializer(many=True, read_only=True)
 
     class Meta:
         model = Category
-        fields = ["id", "name", "description", "parent_id", "children", "products"]
+        fields = ["id", "name", "description", "parent", "children", "products"]
 
     def get_children(self, obj):
         return CategorySerializer(obj.children.all(), many=True).data
