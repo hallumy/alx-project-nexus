@@ -37,10 +37,8 @@ class CachedQuerysetMixin:
             return cached
 
         response = super().list(request, *args, **kwargs)
-        if hasattr(response, "render") and callable(response.render):
-            response.render()
 
-        cache.set(cache_key, response, self.cache_timeout)
+        cache.set(cache_key, response.data, self.cache_timeout)
 
         return response
     
