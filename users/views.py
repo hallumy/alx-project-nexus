@@ -76,4 +76,4 @@ class AddressViewSet(CachedQuerysetMixin, AuthenticatedQuerysetMixin, viewsets.M
 
 
     def perform_create(self, serializer):
-        serializer.save(self.request.user)
+        serializer.save(user=self.request.user)
