@@ -16,7 +16,7 @@ class OrderSerializer(serializers.ModelSerializer):
             "address",
             "order_number",
             "total_amount",
-            "payment_status",
+            "status",
             "order_date",
             "shipped_date",
             "payment_method",
