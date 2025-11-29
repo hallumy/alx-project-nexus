@@ -5,7 +5,6 @@ from utils.mixins import AuthenticatedQuerysetMixin, CachedQuerysetMixin
 from utils.pagination import DefaultPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
-from rest_framework.renderers import JSONRenderer
 from .models import (
     Category, Product, Variant, Cart, CartItem, Wishlist,
     WishlistItem, Discount, ProductDiscount, Inventory,
@@ -37,7 +36,6 @@ class CategoryViewSet(CachedQuerysetMixin, viewsets.ModelViewSet):
     )
     serializer_class = CategorySerializer
     pagination_class = DefaultPagination
-    renderer_classes = [JSONRenderer]
 
     cache_prefix = "categories"
     cache_timeout = 60 * 30
@@ -66,7 +64,6 @@ class ProductViewSet(CachedQuerysetMixin, viewsets.ModelViewSet):
     )
     serializer_class = ProductSerializer
     pagination_class = DefaultPagination
-    renderer_classes = [JSONRenderer]
     lookup_field = "id"
 
     cache_prefix = "products"
@@ -92,7 +89,6 @@ class VariantViewSet(CachedQuerysetMixin, viewsets.ModelViewSet):
     queryset = Variant.objects.all().select_related("product")
     serializer_class = VariantSerializer
     pagination_class = DefaultPagination
-    renderer_classes = [JSONRenderer]
     lookup_field = "sku"
 
     cache_prefix = "variants"
@@ -117,7 +113,6 @@ class CartViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
     permission_classes = [IsAuthenticated]
-    renderer_classes = [JSONRenderer]
 
 
 class CartItemViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
@@ -129,14 +124,12 @@ class CartItemViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
     queryset = CartItem.objects.all()
     serializer_class = CartSerializer
     permission_classes = [IsAuthenticated]
-    renderer_classes = [JSONRenderer]
     user_field = "cart__user"
 
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ["variant", "cart"]
     ordering_fields = ["quantity", "price"]
     ordering = ["-created_at"]
-
 
 
 class WishlistViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
@@ -146,7 +139,6 @@ class WishlistViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
 
     queryset = Wishlist.objects.all()
     serializer_class = WishlistSerializer
-    renderer_classes = [JSONRenderer]
     permission_classes = [IsAuthenticated]
 
 
@@ -158,7 +150,6 @@ class WishlistItemViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
 
     queryset = WishlistItem.objects.all()
     serializer_class = WishlistItemSerializer
-    renderer_classes = [JSONRenderer]
     permission_classes = [IsAuthenticated]
     user_field = "wishlist__user"
 
@@ -170,7 +161,6 @@ class DiscountViewSet(viewsets.ModelViewSet):
 
     queryset = Discount.objects.all()
     serializer_class = DiscountSerializer
-    renderer_classes = [JSONRenderer]
     permission_classes = [IsAuthenticated, IsAdmin]
 
     filter_backends = [DjangoFilterBackend]
@@ -185,7 +175,6 @@ class ProductDiscountViewSet(viewsets.ModelViewSet):
 
     serializer_class = ProductDiscountSerializer
     permission_classes = [IsAuthenticated, IsAdmin]
-    renderer_classes = [JSONRenderer]
     queryset = ProductDiscount.objects.all().select_related("discount", "product")
 
     filter_backends = [DjangoFilterBackend]
@@ -201,7 +190,6 @@ class InventoryViewSet(viewsets.ModelViewSet):
 
     queryset = Inventory.objects.all().select_related("variant")
     serializer_class = InventorySerializer
-    renderer_classes = [JSONRenderer]
     permission_classes = [IsAuthenticated, (IsAdmin | IsVendor)]
 
     filter_backends = [DjangoFilterBackend, OrderingFilter]
