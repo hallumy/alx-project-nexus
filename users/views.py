@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from .serializers import UserSerializer, AddressSerializer
 from rest_framework.permissions import IsAuthenticated
 from .models import User, Address
-from .permissions import IsAdmin, IsVendor, IsCustomer
+from .permissions import IsAdmin, IsAdminOrVendor
 from utils.mixins import AuthenticatedQuerysetMixin, CachedQuerysetMixin
 from utils.pagination import DefaultPagination
 from django_filters.rest_framework import DjangoFilterBackend
@@ -19,6 +19,7 @@ class UserViewSet(CachedQuerysetMixin, viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     pagination_class = DefaultPagination
 
+    filter_backends = [DjangoFilterBackend]
     filterset_fields = ["role", "email", "username"]
     ordering_fields = ["id", "date_joined", "username"]
     ordering = ["-date_joined"]
@@ -49,7 +50,7 @@ class UserViewSet(CachedQuerysetMixin, viewsets.ModelViewSet):
         if self.action in ["create", "update", "partial_update", "destroy"]:
             permission_classes = [IsAdmin]
         elif self.action == "list":
-            permission_classes = [IsAdmin | IsVendor]
+            permission_classes = [IsAdminOrVendor]
         else:
             permission_classes = [IsAuthenticated]
 
@@ -75,4 +76,4 @@ class AddressViewSet(CachedQuerysetMixin, AuthenticatedQuerysetMixin, viewsets.M
 
 
     def perform_create(self, serializer):
-        serializer.save = self.request.user
+        serializer.save(self.request.user)
