@@ -55,7 +55,7 @@ class Shipment(models.Model):
         RETURNED = "returned", "Returned"
 
     order = models.ForeignKey(
-        "order.Order", on_delete=models.CASCADE, related_name="order"
+        "order.Order", on_delete=models.CASCADE, related_name="orders"
     )
     tracking_number = models.CharField(max_length=100, blank=True, null=True)
     carrier = models.CharField(max_length=30)

@@ -121,8 +121,8 @@ class CartItemViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
     Selects related cart and variant for optimization.
     """
 
-    queryset = CartItem.objects.all()
-    serializer_class = CartSerializer
+    queryset = CartItem.objects.all().select_related("cart", "variant", "variant__product")
+    serializer_class = CartItemSerializer
     permission_classes = [IsAuthenticated]
     user_field = "cart__user"
 
