@@ -371,3 +371,167 @@ Open urls.py and add the following configuration to enable Swagger documentation
 
 This will make the Swagger UI available at http://localhost:8000/swagger/ once you run the server.
 
+## Docker Setup (Containerization)
+
+This project supports full Dockerization for local and production builds.
+
+1. Dockerfile
+
+``` FROM python:3.11
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY . .
+
+CMD ["gunicorn", "ecommerce_app.wsgi:application", "--bind", "0.0.0.0:8000"]
+```
+
+2. docker-compose.yml
+``` version: "3.9"
+services:
+  db:
+    image: "postgres:15-alpine"
+    env_file: .env
+    
+  
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  web:
+    build: .
+    env_file: .env
+    container_name: "django_app"
+    command: gunicorn ecommerce_app.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+
+  redis:
+    image: "redis:8-alpine"
+    container_name: "redis_broker"
+    ports:
+      - "6379:6379"
+
+  celery_worker:
+    build: .
+    container_name: "celery_worker"
+    command: celery -A ecommerce_app worker --loglevel=info
+    env_file: .env
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - .:/app
+
+  celery_beat:
+    build: .
+    container_name: "celery_beat"
+    command: celery -A ecommerce_app beat --loglevel=info
+    env_file: .env
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - .:/app
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx_app
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "80:80"
+    depends_on:
+      - web
+  
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
+```
+## Jenkins CI/CD Pipeline
+
+Below is a production-ready Jenkins pipeline.
+
+Jenkinsfile
+```
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git 'https://github.com/your-repo/ecommerce-backend.git'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'pip install -r requirements.txt'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh 'pytest'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t ecommerce-backend .'
+            }
+        }
+
+        stage('Push to Docker Hub') {
+            steps {
+                sh '''
+                docker login -u $DOCKER_USER -p $DOCKER_PASS
+                docker tag ecommerce-backend $DOCKER_USER/ecommerce-backend:latest
+                docker push $DOCKER_USER/ecommerce-backend:latest
+                '''
+            }
+        }
+
+        stage('Deploy to Heroku') {
+            steps {
+                sh '''
+                heroku container:login
+                heroku container:push web --app your-heroku-app
+                heroku container:release web --app your-heroku-app
+                '''
+            }
+        }
+    }
+}
+```
+## Heroku Deployment Guide
+1. Install Heroku CLI
+`curl https://cli-assets.heroku.com/install.sh | sh`
+
+2. Login
+`heroku login`
+
+3. Create Heroku App
+`heroku create ecommerce-backend-app`
+
+4. Deploy via Docker
+`heroku container:login`
+`heroku container:push web --app ecommerce-backend-app`
+`heroku container:release web --app ecommerce-backend-app`
+
+5. Set Environment Variables
+`heroku config:set SECRET_KEY=xxxx`
+`heroku config:set DATABASE_URL=postgres://...`
