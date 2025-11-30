@@ -131,6 +131,10 @@ class CartItemViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
     ordering_fields = ["quantity", "price"]
     ordering = ["-created_at"]
 
+    def perform_create(self, serializer):
+        cart, _ = Cart.objects.get_or_create(user=self.request.user)
+        serializer.save(cart=cart)
+
 
 class WishlistViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
     """
