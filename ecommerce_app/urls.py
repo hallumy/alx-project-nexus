@@ -16,12 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework import permissions
+from rest_framework.permissions import AllowAny
+from django.shortcuts import redirect
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from strawberry.django.views import GraphQLView
 from graphql_eco.schema import schema
-from django.http import JsonResponse
+from users.views import home
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -37,12 +38,9 @@ schema_view = get_schema_view(
         license=openapi.License(name="BSD License"),
     ),
     public=True,
-    permission_classes=(permissions.AllowAny,),
+    permission_classes=[AllowAny],
+    authentication_classes=[], 
 )
-
-def home(request):
-    return JsonResponse({"message": "Ecommerce API is running"})
-
 
 urlpatterns = [
     path('', home),
