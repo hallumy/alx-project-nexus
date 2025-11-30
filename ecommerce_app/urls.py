@@ -15,19 +15,25 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from rest_framework.permissions import AllowAny
 from django.shortcuts import redirect
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from strawberry.django.views import GraphQLView
 from graphql_eco.schema import schema
+from drf_yasg.inspectors import SwaggerAutoSchema
 from users.views import home
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
 
+class IgnoreGraphQLSchema(SwaggerAutoSchema):
+    def get_operation(self, operation_keys=None):
+        if self.view.__class__.__name__ == "GraphQLView":
+            return None  # Skip GraphQL from schema
+        return super().get_operation(operation_keys)
 # Swagger schema view (for API docs)
 schema_view = get_schema_view(
     openapi.Info(
@@ -39,7 +45,6 @@ schema_view = get_schema_view(
     ),
     public=True,
     permission_classes=[AllowAny],
-    authentication_classes=[], 
 )
 
 urlpatterns = [
@@ -51,6 +56,7 @@ urlpatterns = [
     path('api/', include('payment.urls')),
     path('api/', include('review.urls')),
     path("api/", include("monitoring.urls")),
+    re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='swagger-ui'),
     path("graphql/", GraphQLView.as_view(schema=schema)),
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
