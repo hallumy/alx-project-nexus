@@ -18,8 +18,6 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.permissions import AllowAny
 from django.shortcuts import redirect
-from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.decorators import login_required
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from strawberry.django.views import GraphQLView
