@@ -6,6 +6,7 @@ from .permissions import IsAdmin, IsAdminOrVendor
 from utils.mixins import AuthenticatedQuerysetMixin, CachedQuerysetMixin
 from utils.pagination import DefaultPagination
 from django_filters.rest_framework import DjangoFilterBackend
+from django.http import JsonResponse
 
 
 class UserViewSet(CachedQuerysetMixin, viewsets.ModelViewSet):
@@ -77,3 +78,6 @@ class AddressViewSet(CachedQuerysetMixin, AuthenticatedQuerysetMixin, viewsets.M
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+def home(request):
+    return JsonResponse({"message": "Ecommerce API is running"})

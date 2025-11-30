@@ -5,7 +5,6 @@ from .models import Review
 from .serializers import ReviewSerializer
 from utils.mixins import AuthenticatedQuerysetMixin
 from utils.pagination import DefaultPagination
-from django.http import JsonResponse
 
 
 class ReviewViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
@@ -39,6 +38,5 @@ class ReviewViewSet(AuthenticatedQuerysetMixin, viewsets.ModelViewSet):
             raise ValidationError("You have already reviewed this product.")
         serializer.save(user=user, product_id=product_id)
 
-def home(request):
-    return JsonResponse({"message": "Ecommerce API is running"})
+
 
