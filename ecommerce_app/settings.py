@@ -175,3 +175,15 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": crontab(minute="*/1")
     },
 }
+
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter: Bearer <your access token>",
+        }
+    },
+    "USE_SESSION_AUTH": False, 
+}
