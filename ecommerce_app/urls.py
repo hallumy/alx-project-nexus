@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.permissions import AllowAny
 from django.shortcuts import redirect
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from strawberry.django.views import GraphQLView
@@ -51,7 +53,7 @@ urlpatterns = [
     path('api/', include('payment.urls')),
     path('api/', include('review.urls')),
     path("api/", include("monitoring.urls")),
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='swagger-ui'),
+    path('swagger/', login_required(csrf_exempt(schema_view.with_ui('swagger', cache_timeout=0))), name='swagger-ui'),
     path("graphql/", GraphQLView.as_view(schema=schema)),
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
