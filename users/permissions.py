@@ -9,7 +9,6 @@ class IsAdmin(BasePermission):
         return request.user.is_authenticated and (request.user.is_admin or request.user.is_superuser)
 
 
-
 class IsVendor(BasePermission):
     """Allows partial access to vendors"""
 
